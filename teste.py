@@ -20,7 +20,7 @@ def enviar_mensagem(numero, mensagem):
         url = f"https://web.whatsapp.com/send?phone={numero}&text={mensagem_encoded}"
         webbrowser.open(url)
         print(f"Aguardando o chat carregar para {numero}...")
-        time.sleep(5)  # Aumentado para 5s
+        time.sleep(7)  # Aumentado para 7s
         
         # Forçar foco e enviar
         pyautogui.press('tab')  # Tenta focar no campo
@@ -58,6 +58,6 @@ for index, row in contatos_df.iterrows():
         continue
     print(f"Enviando mensagem para {numero}...")
     enviar_mensagem(numero, mensagem)
-    time.sleep(random.uniform(5, 7))  # Pausa maior para evitar bloqueios
+    time.sleep(random.uniform(6, 8))  # Aumentado para 6-8s
 
 print("Envio de mensagens concluído!")
