@@ -1,34 +1,28 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import webbrowser
+import pyautogui
 import pandas as pd
 import time
 import urllib.parse
 
-# Configurar o navegador
-driver = webdriver.Chrome()  # Certifique-se de ter o ChromeDriver instalado
-driver.get("https://web.whatsapp.com")
+# Abrir WhatsApp Web no navegador padrão
+webbrowser.open("https://web.whatsapp.com")
 print("Escaneie o QR code no WhatsApp Web e pressione Enter no terminal...")
 input()  # Aguarda o usuário escanear o QR code
 
 # Função para enviar mensagem
 def enviar_mensagem(numero, mensagem):
     try:
-        # Codificar a mensagem e criar a URL do WhatsApp
+        # Criar a URL do WhatsApp
         mensagem_encoded = urllib.parse.quote(mensagem)
         url = f"https://web.whatsapp.com/send?phone={numero}&text={mensagem_encoded}"
-        driver.get(url)
+        webbrowser.open(url)
         print(f"Aguardando o chat carregar para {numero}...")
+        time.sleep(10)  # Aguarda o chat carregar
         
-        # Aguardar até que o campo de texto esteja clicável
-        campo_texto = WebDriverWait(driver, 30).until(
-            EC.element_to_be_clickable((By.XPATH, '//div[@title="Digite uma mensagem"]'))
-        )
-        print(f"Campo de texto encontrado para {numero}, clicando...")
-        campo_texto.click()  # Clica no campo de texto para garantir o foco
-        campo_texto.send_keys(Keys.ENTER)  # Pressiona Enter para enviar
+        # Simular clique no campo de texto (ajuste as coordenadas conforme necessário)
+        pyautogui.click(x=700, y=800)  # Coordenadas aproximadas do campo de texto
+        time.sleep(1)
+        pyautogui.press('enter')  # Pressiona Enter
         print(f"Mensagem enviada para {numero}")
         time.sleep(2)  # Pausa após o envio
     except Exception as e:
@@ -39,14 +33,12 @@ try:
     contatos_df = pd.read_csv("contatos.csv", dtype={'numero': str})
 except FileNotFoundError:
     print("Erro: O arquivo 'contatos.csv' não foi encontrado.")
-    driver.quit()
     exit()
 
 # Verificar as colunas do CSV
 print("Colunas encontradas no CSV:", contatos_df.columns.tolist())
 if "numero" not in contatos_df.columns:
     print("Erro: A coluna 'numero' não foi encontrada.")
-    driver.quit()
     exit()
 
 # Verificar os números carregados
@@ -66,4 +58,3 @@ for index, row in contatos_df.iterrows():
     time.sleep(10)  # Pausa entre envios para evitar bloqueios
 
 print("Envio de mensagens concluído!")
-driver.quit()
